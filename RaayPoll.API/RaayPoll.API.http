@@ -1,0 +1,6 @@
+@RaayPoll.API_HostAddress = http://localhost:5183
+
+GET {{RaayPoll.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
