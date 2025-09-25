@@ -5,7 +5,10 @@ namespace RaayPoll.API.DTOs.Responses
     public record PollResponse(
         int Id,
         string Name,
-        string? Description);
+        string? Description,
+        bool IsPublished,
+        DateTime StartAt,
+        DateTime EndAt);
 
     //public class PollResponse
     //{

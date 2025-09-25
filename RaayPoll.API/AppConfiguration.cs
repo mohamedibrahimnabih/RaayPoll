@@ -1,10 +1,9 @@
 ﻿using FluentValidation;
 using Microsoft.EntityFrameworkCore;
-using RaayPoll.API.Mappings;
 
 namespace RaayPoll.API
 {
-    public static class Configuration
+    public static class AppConfiguration
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration configuration)
         {

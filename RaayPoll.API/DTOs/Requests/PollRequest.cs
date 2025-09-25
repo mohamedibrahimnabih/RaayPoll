@@ -2,7 +2,10 @@
 {
     public record PollRequest(
         /*[CustomLength(5, 10)]*/ string Name, 
-        string? Description);
+        string? Description,
+        bool IsPublished,
+        [NotPastDate] DateTime StartAt,
+        [EndDateAfter(nameof(StartAt))] DateTime EndAt);
 
     //public class PollRequest
     //{
