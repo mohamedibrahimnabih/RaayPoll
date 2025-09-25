@@ -7,8 +7,7 @@ namespace RaayPoll.API.DataAccess.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<Poll> builder)
         {
-            builder.Property(e => e.Name).HasMaxLength(100);
-            builder.Property(e => e.Description).HasMaxLength(1000);
+            builder.Property(e => e.Name).HasMaxLength(256);
         }
     }
 }

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using RaayPoll.API;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -26,6 +27,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+app.MapIdentityApi<IdentityUser>();
 
 //app.UseMiddleware<LoggingMiddleware>();
 

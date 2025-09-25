@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace RaayPoll.API
@@ -14,6 +15,11 @@ namespace RaayPoll.API
             // DbContext
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionString));
+
+            // Identity
+            services.AddIdentityApiEndpoints<IdentityUser>()
+             .AddRoles<IdentityRole>()
+             .AddEntityFrameworkStores<ApplicationDbContext>();
 
             // Business Services
             services.AddScoped<IPollService, PollService>();
