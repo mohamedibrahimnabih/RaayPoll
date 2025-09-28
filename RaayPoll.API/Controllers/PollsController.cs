@@ -1,4 +1,5 @@
 ﻿using Mapster;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace RaayPoll.API.Controllers
@@ -15,6 +16,7 @@ namespace RaayPoll.API.Controllers
         }
 
         [HttpGet("")]
+        [Authorize]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
             var polls = await _pollService.GetAllAsync(cancellationToken);

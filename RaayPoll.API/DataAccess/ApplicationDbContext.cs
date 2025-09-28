@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace RaayPoll.API.DataAccess
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public DbSet<Poll> Polls { get; set; }
 
@@ -14,6 +14,8 @@ namespace RaayPoll.API.DataAccess
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             //modelBuilder.ApplyConfigurationsFromAssembly(typeof(PollEntityTypeConfiguration).Assembly);
         }
     }
