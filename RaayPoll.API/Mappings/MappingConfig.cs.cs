@@ -6,9 +6,6 @@ namespace RaayPoll.API.Mappings
     {
         public static void RegisterMapsterConfiguration(this IServiceCollection services)
         {
-            //TypeAdapterConfig<PollRequest, Poll>
-            //    .NewConfig()
-            //    .Map(e => e.Description, s => s.Note);
         }
     }
 }

@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace RaayPoll.API.Migrations
+namespace RaayPoll.API.DataAccess.Migrations
 {
     /// <inheritdoc />
     public partial class AddPollModel : Migration

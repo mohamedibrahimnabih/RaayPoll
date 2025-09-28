@@ -8,7 +8,7 @@ using RaayPoll.API.DataAccess;
 
 #nullable disable
 
-namespace RaayPoll.API.Migrations
+namespace RaayPoll.API.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     [Migration("20250923114916_AddPollModel")]

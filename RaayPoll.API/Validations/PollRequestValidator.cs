@@ -6,7 +6,7 @@ namespace RaayPoll.API.Validations
     {
         public PollRequestValidator()
         {
-            RuleFor(model => model.Name).Length(5, 10);
+            RuleFor(model => model.Name).MaximumLength(256);
         }
     }
 }

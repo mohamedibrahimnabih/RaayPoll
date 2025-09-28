@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace RaayPoll.API.DataAccess
 {
-    public class ApplicationDbContext : IdentityDbContext
+    public class ApplicationDbContext : DbContext
     {
         public DbSet<Poll> Polls { get; set; }
 

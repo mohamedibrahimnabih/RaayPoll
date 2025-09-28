@@ -1,6 +1,6 @@
-﻿using FluentValidation;
-using Microsoft.AspNetCore.Identity;
+﻿using Mapster;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 namespace RaayPoll.API
 {
@@ -16,21 +16,16 @@ namespace RaayPoll.API
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionString));
 
-            // Identity
-            services.AddIdentityApiEndpoints<IdentityUser>()
-             .AddRoles<IdentityRole>()
-             .AddEntityFrameworkStores<ApplicationDbContext>();
-
             // Business Services
             services.AddScoped<IPollService, PollService>();
 
             // FluentValidation
             //builder.Services.AddScoped<IValidator<PollRequest>, PollRequestValidator>();
-            services.AddValidatorsFromAssemblyContaining<PollRequestValidator>();
+            //services.AddValidatorsFromAssemblyContaining<PollRequestValidator>();
 
             // Mapster
             services.RegisterMapsterConfiguration();
-            //TypeAdapterConfig.GlobalSettings.Scan(Assembly.GetExecutingAssembly());
+            TypeAdapterConfig.GlobalSettings.Scan(Assembly.GetExecutingAssembly());
 
             return services;
         }

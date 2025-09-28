@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace RaayPoll.API.Migrations
+namespace RaayPoll.API.DataAccess.Migrations
 {
     /// <inheritdoc />
     public partial class AddNewPropsToPollModel : Migration

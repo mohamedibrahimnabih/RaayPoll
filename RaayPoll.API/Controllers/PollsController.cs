@@ -1,8 +1,5 @@
-﻿using FluentValidation;
-using Mapster;
-using Microsoft.AspNetCore.Http;
+﻿using Mapster;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace RaayPoll.API.Controllers
 {
@@ -11,12 +8,10 @@ namespace RaayPoll.API.Controllers
     public class PollsController : ControllerBase
     {
         private readonly IPollService _pollService;
-        private readonly IValidator<PollRequest> _validator;
 
-        public PollsController(IPollService pollService, IValidator<PollRequest> validator)
+        public PollsController(IPollService pollService)
         {
             _pollService = pollService;
-            _validator = validator;
         }
 
         [HttpGet("")]

@@ -3,20 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RaayPoll.API.DataAccess;
 
 #nullable disable
 
-namespace RaayPoll.API.Migrations
+namespace RaayPoll.API.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250925122601_AddNewPropsToPollModel")]
-    partial class AddNewPropsToPollModel
+    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,7 +48,7 @@ namespace RaayPoll.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Polls");
+                    b.ToTable("Polls", (string)null);
                 });
 #pragma warning restore 612, 618
         }
