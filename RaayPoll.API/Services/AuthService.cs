@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -8,14 +9,10 @@ using System.Text;
 
 namespace RaayPoll.API.Services
 {
-    public class AuthService : IAuthService
+    public class AuthService(SignInManager<ApplicationUser> signInManager, IOptions<JWTOptions> options) : IAuthService
     {
-        private readonly SignInManager<ApplicationUser> _signInManager;
-
-        public AuthService(SignInManager<ApplicationUser> signInManager)
-        {
-            _signInManager = signInManager;
-        }
+        private readonly SignInManager<ApplicationUser> _signInManager = signInManager;
+        private readonly JWTOptions _options = options.Value;
 
         public async Task<AccessTokenResponse?> ValidateAndGenerateToken(string email, string password, CancellationToken cancellationToken = default)
         {
@@ -37,14 +34,14 @@ namespace RaayPoll.API.Services
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("1NGk88rJYltERNfunPwwy0ULb8kKp8tJ"));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.Key));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
-                issuer: "https://localhost:7253",
-                audience: "https://localhost:5000",
+                issuer: _options.Issuer,
+                audience: _options.Audience,
                 claims: claims,
-                expires: DateTime.Now.AddHours(1),
+                expires: DateTime.Now.AddMinutes(_options.ExpiresInMinute),
                 signingCredentials: creds);
 
             return (new JwtSecurityTokenHandler().WriteToken(token), (long)(token.ValidTo - DateTime.UtcNow).TotalSeconds);

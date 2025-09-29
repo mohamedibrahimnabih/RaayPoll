@@ -25,6 +25,14 @@ namespace RaayPoll.API
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             // Authentication
+            var JWTOptionsConfig = configuration.GetSection(JWTOptions.JWT).Get<JWTOptions>();
+
+            //services.Configure<JWTOptions>(configuration.GetSection(JWTOptions.JWT));
+            services.AddOptions<JWTOptions>()
+                .Bind(configuration.GetSection(JWTOptions.JWT))
+                .ValidateDataAnnotations()
+                .ValidateOnStart();
+
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -38,9 +46,9 @@ namespace RaayPoll.API
                         ValidateAudience = true,
                         ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
-                        ValidIssuer = "https://localhost:7253",
-                        ValidAudience = "https://localhost:5000",
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("1NGk88rJYltERNfunPwwy0ULb8kKp8tJ"))
+                        ValidIssuer = JWTOptionsConfig?.Issuer,
+                        ValidAudience = JWTOptionsConfig?.Audience,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JWTOptionsConfig?.Key!))
                     };
                 });
 

@@ -30,7 +30,7 @@ app.UseAuthorization();
 
 //app.UseMiddleware<LoggingMiddleware>();
 
-app.UseLogging();
+//app.UseLogging();
 
 app.MapControllers();
 
