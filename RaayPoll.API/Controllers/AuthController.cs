@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using System.Threading.Tasks;
 
 namespace RaayPoll.API.Controllers
@@ -10,9 +11,9 @@ namespace RaayPoll.API.Controllers
         private readonly IAuthService _authService = authService;
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginRequest loginRequest, CancellationToken cancellationToken)
+        public async Task<IActionResult> LoginAsync(LoginRequest loginRequest)
         {
-            var result = await _authService.ValidateAndGenerateToken(loginRequest.Email, loginRequest.Password, cancellationToken);
+            var result = await _authService.ValidateAndGenerateTokenAsync(loginRequest.Email, loginRequest.Password);
 
             if(result is null)
                 return NotFound(new

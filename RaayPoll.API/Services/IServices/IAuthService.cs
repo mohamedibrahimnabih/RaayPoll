@@ -2,6 +2,6 @@
 {
     public interface IAuthService
     {
-        Task<AccessTokenResponse?> ValidateAndGenerateToken(string email, string password, CancellationToken cancellationToken = default);
+        Task<AccessTokenResponse?> ValidateAndGenerateTokenAsync(string email, string password);
     }
 }
