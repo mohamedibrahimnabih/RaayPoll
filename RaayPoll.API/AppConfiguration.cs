@@ -12,6 +12,20 @@ namespace RaayPoll.API
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration configuration)
         {
+            // CORS 
+            var origins = configuration.GetSection("Origins").Get<string[]>()!;
+
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(
+                    policy =>
+                    {
+                        policy.WithOrigins(origins)
+                                .AllowAnyMethod()
+                                .AllowAnyHeader();
+                    });
+            });
+
             // Connection String
             var connectionString = configuration.GetConnectionString("DefaultConnection")
                 ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
