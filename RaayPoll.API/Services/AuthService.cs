@@ -61,7 +61,9 @@ namespace RaayPoll.API.Services
 
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, email),
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
+                new Claim(ClaimTypes.Name, user.UserName!),
+                new Claim(ClaimTypes.Email, email),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             };
             var accessToken = _tokenService.GenerateAccessToken(claims);
@@ -85,7 +87,7 @@ namespace RaayPoll.API.Services
             if(principal is null)
                 return null;
 
-            var username = principal.Claims.FirstOrDefault(e=>e.Type == ClaimTypes.NameIdentifier)?.Value;
+            var username = principal.Claims.FirstOrDefault(e=>e.Type == ClaimTypes.Name)?.Value;
 
             //if (username is null)
             //    return null;

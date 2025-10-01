@@ -14,7 +14,7 @@ namespace RaayPoll.API.Controllers
         private readonly IAuthService _authService = authService;
 
         [HttpPost("login")]
-        public async Task<IActionResult> LoginAsync(LoginRequest loginRequest)
+        public async Task<IActionResult> Login(LoginRequest loginRequest)
         {
             var result = await _authService.ValidateAndGenerateTokenAsync(loginRequest.Email, loginRequest.Password);
 
@@ -28,7 +28,7 @@ namespace RaayPoll.API.Controllers
         }
 
         [HttpPost("refresh")]
-        public async Task<IActionResult> RefreshAsync(RefreshTokenRequest refreshTokenRequest)
+        public async Task<IActionResult> Refresh(RefreshTokenRequest refreshTokenRequest)
         {
             var result = await _authService.ValidateTokenAndGenerateNewAsync(refreshTokenRequest.AccessToken, refreshTokenRequest.RefreshToken);
 
@@ -42,7 +42,7 @@ namespace RaayPoll.API.Controllers
         }
 
         [HttpPut("revoke-refresh-token")]
-        public async Task<IActionResult> RevokeAsync(RefreshTokenRequest refreshTokenRequest)
+        public async Task<IActionResult> Revoke(RefreshTokenRequest refreshTokenRequest)
         {
             var result = await _authService.RevokeTokenAsync(refreshTokenRequest.AccessToken, refreshTokenRequest.RefreshToken);
 
