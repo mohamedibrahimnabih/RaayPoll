@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using RaayPoll.API.DTOs.Requests;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace RaayPoll.API.Controllers
@@ -22,6 +25,34 @@ namespace RaayPoll.API.Controllers
                 });
 
             return Ok(result);
+        }
+
+        [HttpPost("refresh")]
+        public async Task<IActionResult> RefreshAsync(RefreshTokenRequest refreshTokenRequest)
+        {
+            var result = await _authService.ValidateTokenAndGenerateNewAsync(refreshTokenRequest.AccessToken, refreshTokenRequest.RefreshToken);
+
+            if (result is null)
+                return BadRequest(new
+                {
+                    Msg = "Invalid client request"
+                });
+
+            return Ok(result);
+        }
+
+        [HttpPut("revoke-refresh-token")]
+        public async Task<IActionResult> RevokeAsync(RefreshTokenRequest refreshTokenRequest)
+        {
+            var result = await _authService.RevokeTokenAsync(refreshTokenRequest.AccessToken, refreshTokenRequest.RefreshToken);
+
+            if (!result)
+                return BadRequest(new
+                {
+                    Msg = "Invalid client request"
+                });
+
+            return NoContent();
         }
     }
 }

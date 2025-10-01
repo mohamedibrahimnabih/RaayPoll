@@ -42,6 +42,7 @@ namespace RaayPoll.API
                 {
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
+                        ClockSkew = TimeSpan.Zero,
                         ValidateIssuer = true,
                         ValidateAudience = true,
                         ValidateLifetime = true,
@@ -51,6 +52,8 @@ namespace RaayPoll.API
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JWTOptionsConfig?.Key!))
                     };
                 });
+
+            services.AddTransient<ITokenService, TokenService>();
 
             // Business Services
             services.AddScoped<IPollService, PollService>();

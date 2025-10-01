@@ -3,6 +3,7 @@
     public class AccessTokenResponse
     {
         public required string AccessToken { get; init; }
-        public required long ExpiresIn { get; init; }
+        public required int ExpiresInMinute { get; init; }
+        public required string RefreshToken { get; init; }
     }
 }
