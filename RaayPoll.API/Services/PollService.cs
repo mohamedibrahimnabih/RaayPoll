@@ -1,6 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using FluentResults;
+using Mapster;
+using Microsoft.EntityFrameworkCore;
 using RaayPoll.API.Models;
-using System.Threading.Tasks;
 
 namespace RaayPoll.API.Services
 {
@@ -8,56 +9,62 @@ namespace RaayPoll.API.Services
     {
         private readonly ApplicationDbContext _context = context;
 
-        public async Task<IEnumerable<Poll>> GetAllAsync(CancellationToken cancellationToken = default) => await _context.Polls.AsNoTracking().ToListAsync(cancellationToken);
-        public async Task<Poll?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
+        public async Task<Result<IEnumerable<PollResponse>>> GetAllAsync(CancellationToken cancellationToken = default) => Result.Ok((await _context.Polls.AsNoTracking().ToListAsync(cancellationToken)).Adapt<IEnumerable<PollResponse>>());
+
+        public async Task<Result<PollResponse>> GetByIdAsync(int id, CancellationToken cancellationToken = default)
         {
             var poll = await _context.Polls.FindAsync(id, cancellationToken);
-            return poll;
-        }
-
-        public async Task<Poll> AddAsync(Poll poll, CancellationToken cancellationToken = default)
-        {
-            await _context.AddAsync(poll, cancellationToken);
-            return poll;
-        }
-        public async Task<bool> UpdateAsync(int id, Poll poll, CancellationToken cancellationToken = default)
-        {
-            var pollInDB = await GetByIdAsync(id, cancellationToken);
-
-            if (pollInDB is null)
-                return false;
-
-            pollInDB.Name = poll.Name;
-            pollInDB.Description = poll.Description;
-            return true;
-        }
-
-        public async Task<bool> UpdateToggleAsync(int id, CancellationToken cancellationToken = default)
-        {
-            var pollInDB = await GetByIdAsync(id, cancellationToken);
-
-            if (pollInDB is null)
-                return false;
-
-            pollInDB.IsPublished = !pollInDB.IsPublished;
-            return true;
-        }
-        public async Task<bool> DeleteAsync(int id, CancellationToken cancellationToken = default)
-        {
-            var poll = await GetByIdAsync(id, cancellationToken);
 
             if (poll is null)
-                return false;
+                return Result.Fail($"Poll with id {id} not found");
+
+            return Result.Ok(poll.Adapt<PollResponse>());
+        }
+
+        public async Task<Result<Poll>> AddAsync(PollRequest pollRequest, CancellationToken cancellationToken = default)
+        {
+            var poll = await _context.Polls.AddAsync(pollRequest.Adapt<Poll>(), cancellationToken);
+            return Result.Ok(poll.Entity);
+        }
+        public async Task<Result> UpdateAsync(int id, PollRequest pollRequest, CancellationToken cancellationToken = default)
+        {
+            var pollInDB = await _context.Polls.FindAsync(id, cancellationToken);
+
+            if (pollInDB is null)
+                return Result.Fail($"Poll with id {id} not found");
+
+            pollInDB.Name = pollRequest.Name;
+            pollInDB.Description = pollRequest.Description;
+
+            return Result.Ok();
+        }
+
+        public async Task<Result> UpdateToggleAsync(int id, CancellationToken cancellationToken = default)
+        {
+            var pollInDB = await _context.Polls.FindAsync(id, cancellationToken);
+
+            if (pollInDB is null)
+                return Result.Fail($"Poll with id {id} not found");
+
+            pollInDB.IsPublished = !pollInDB.IsPublished;
+
+            return Result.Ok();
+        }
+        public async Task<Result> DeleteAsync(int id, CancellationToken cancellationToken = default)
+        {
+            var poll = await _context.Polls.FindAsync(id, cancellationToken);
+
+            if (poll is null)
+                return Result.Fail($"Poll with id {id} not found");
 
             _context.Remove(poll);
-            return true;
+
+            return Result.Ok();
         }
-        public async Task<int> CommitAsync(CancellationToken cancellationToken = default)
+        public async Task<Result<int>> CommitAsync(CancellationToken cancellationToken = default)
         {
             var affectedRows = await _context.SaveChangesAsync(cancellationToken);
-            return affectedRows;
+            return Result.Ok(affectedRows);
         }
-
-        
     }
 }

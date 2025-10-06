@@ -9,3 +9,4 @@ global using RaayPoll.API.DTOs.Responses;
 global using RaayPoll.API.Validations;
 global using RaayPoll.API.Mappings;
 global using RaayPoll.API.Utilities;
+global using RaayPoll.API.Errors;

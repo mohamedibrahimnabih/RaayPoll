@@ -15,18 +15,28 @@ namespace RaayPoll.API.Controllers
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
             var polls = await _pollService.GetAllAsync(cancellationToken);
-            return Ok(polls.Adapt<IEnumerable<PollResponse>>());
+            return Ok(polls.Value);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id, CancellationToken cancellationToken)
         {
-            var poll = await _pollService.GetByIdAsync(id, cancellationToken);
+            var result = await _pollService.GetByIdAsync(id, cancellationToken);
 
-            if (poll is null)
-                return NotFound();
+            if (result.IsFailed)
+            {
+                var errors = result.Errors.Select(e => e.Message).ToArray();
 
-            return Ok(poll.Adapt<PollResponse>());
+                return Problem(
+                    statusCode: StatusCodes.Status404NotFound,
+                    extensions: new Dictionary<string, object?>
+                    {
+                        ["errors"] = errors
+                    }
+                );
+            }
+
+            return Ok(result.Value);
         }
 
         [HttpPost("")]
@@ -38,19 +48,29 @@ namespace RaayPoll.API.Controllers
 
             //var validationResult = await _validator.ValidateAsync(pollRequest);
 
-            var createdPoll = await _pollService.AddAsync(pollRequest.Adapt<Poll>(), cancellationToken);
-
+            var result = await _pollService.AddAsync(pollRequest, cancellationToken);
             await _pollService.CommitAsync(cancellationToken);
-            return CreatedAtAction(nameof(Get), new { id = createdPoll.Id }, createdPoll.Adapt<PollResponse>());
+
+            return CreatedAtAction(nameof(Get), new { id = result.Value.Id }, result.Value.Adapt<PollResponse>());
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, PollRequest pollRequest, CancellationToken cancellationToken)
         {
-            var result = await _pollService.UpdateAsync(id, pollRequest.Adapt<Poll>(), cancellationToken);
+            var result = await _pollService.UpdateAsync(id, pollRequest, cancellationToken);
 
-            if (!result)
-                return NotFound();
+            if (result.IsFailed)
+            {
+                var errors = result.Errors.Select(e => e.Message).ToArray();
+
+                return Problem(
+                    statusCode: StatusCodes.Status404NotFound,
+                    extensions: new Dictionary<string, object?>
+                    {
+                        ["errors"] = errors
+                    }
+                );
+            }
 
             await _pollService.CommitAsync(cancellationToken);
             return NoContent();
@@ -61,8 +81,18 @@ namespace RaayPoll.API.Controllers
         {
             var result = await _pollService.DeleteAsync(id, cancellationToken);
 
-            if (!result)
-                return NotFound();
+            if (result.IsFailed)
+            {
+                var errors = result.Errors.Select(e => e.Message).ToArray();
+
+                return Problem(
+                    statusCode: StatusCodes.Status404NotFound,
+                    extensions: new Dictionary<string, object?>
+                    {
+                        ["errors"] = errors
+                    }
+                );
+            }
 
             await _pollService.CommitAsync(cancellationToken);
             return NoContent();
@@ -73,8 +103,18 @@ namespace RaayPoll.API.Controllers
         {
             var result = await _pollService.UpdateToggleAsync(id, cancellationToken);
 
-            if (!result)
-                return NotFound();
+            if (result.IsFailed)
+            {
+                var errors = result.Errors.Select(e => e.Message).ToArray();
+
+                return Problem(
+                    statusCode: StatusCodes.Status404NotFound,
+                    extensions: new Dictionary<string, object?>
+                    {
+                        ["errors"] = errors
+                    }
+                );
+            }
 
             await _pollService.CommitAsync(cancellationToken);
             return NoContent();

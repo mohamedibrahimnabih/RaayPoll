@@ -18,13 +18,20 @@ namespace RaayPoll.API.Controllers
         {
             var result = await _authService.ValidateAndGenerateTokenAsync(loginRequest.Email, loginRequest.Password);
 
-            if(result is null)
-                return NotFound(new
-                {
-                    Msg = "Invalid Email / Password"
-                });
+            if (result.IsFailed)
+            {
+                var errors = result.Errors.Select(e => e.Message).ToArray();
 
-            return Ok(result);
+                return Problem(
+                    statusCode: StatusCodes.Status401Unauthorized,
+                    extensions: new Dictionary<string, object?>
+                    {
+                        ["errors"] = errors
+                    }
+                );
+            }
+
+            return Ok(result.Value);
         }
 
         [HttpPost("refresh")]
@@ -32,13 +39,19 @@ namespace RaayPoll.API.Controllers
         {
             var result = await _authService.ValidateTokenAndGenerateNewAsync(refreshTokenRequest.AccessToken, refreshTokenRequest.RefreshToken);
 
-            if (result is null)
-                return BadRequest(new
-                {
-                    Msg = "Invalid client request"
-                });
+            if (result.IsFailed)
+            {
+                var errors = result.Errors.Select(e => e.Message).ToArray();
 
-            return Ok(result);
+                return Problem(
+                    statusCode: StatusCodes.Status400BadRequest,
+                    extensions: new Dictionary<string, object?>
+                    {
+                        ["errors"] = errors
+                    });
+            }
+
+            return Ok(result.Value);
         }
 
         [HttpPut("revoke-refresh-token")]
@@ -46,11 +59,17 @@ namespace RaayPoll.API.Controllers
         {
             var result = await _authService.RevokeTokenAsync(refreshTokenRequest.AccessToken, refreshTokenRequest.RefreshToken);
 
-            if (!result)
-                return BadRequest(new
-                {
-                    Msg = "Invalid client request"
-                });
+            if (result.IsFailed)
+            {
+                var errors = result.Errors.Select(e => e.Message).ToArray();
+
+                return Problem(
+                    statusCode: StatusCodes.Status400BadRequest,
+                    extensions: new Dictionary<string, object?>
+                    {
+                        ["errors"] = errors
+                    });
+            }
 
             return NoContent();
         }
